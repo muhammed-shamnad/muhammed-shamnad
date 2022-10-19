@@ -4,6 +4,8 @@ const router = express.Router();
 const port = 8000;
 const cors = require('cors')
 
+require('dotenv').config();
+
 const routes = require('./routes/index');
 
 app.use(express.urlencoded({extended: true}))
