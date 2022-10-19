@@ -33,7 +33,7 @@ const getFileFromS3 = async (req, res) => {
     try {
         const params = { Bucket: process.env.AWS_S3_BUCKET_NAME, Key: req.params.imageId };
         s3.getObject(params, function (err, data) {
-            if(err) {
+            if (err) {
                 return res.status(500).send(constant.unknownError)
             }
             res.writeHead(200, { 'Content-Type': 'image/jpeg' });
@@ -49,10 +49,10 @@ const listFilesFromS3 = async (req, res) => {
     try {
         const params = { Bucket: process.env.AWS_S3_BUCKET_NAME };
         s3.listObjectsV2(params, function (err, data) {
-            if(err) {
+            if (err) {
                 return res.status(500).send(constant.unknownError)
             }
-           res.status(200).send({data})
+            res.status(200).send({ data })
         });
     } catch (error) {
         res.status(500).send(constant.unknownError)
@@ -79,9 +79,26 @@ const updateFileInS3 = async (req, res) => {
     }
 }
 
+const deleteFileFromS3 = async (req, res) => {
+    try {
+        const { imageKey } = req.body;
+        var params = { Bucket: process.env.AWS_S3_BUCKET_NAME, Key: imageKey };
 
-exports.uploadFileToS3  = uploadFileToS3
-exports.getFileFromS3   = getFileFromS3
-exports.listFilesFromS3 = listFilesFromS3
-exports.updateFileInS3  = updateFileInS3
+        s3.deleteObject(params, function (err, data) {
+            if (err)  return res.status(500).send(constant.unknownError)
+            res.status(200).send(constant.success)
+        });
+    } catch (error) {
+        res.status(500).send(constant.unknownError)
+    }
+}
+
+
+exports.uploadFileToS3   = uploadFileToS3
+exports.getFileFromS3    = getFileFromS3
+exports.listFilesFromS3  = listFilesFromS3
+exports.updateFileInS3   = updateFileInS3
+exports.deleteFileFromS3 = deleteFileFromS3
+
+
 
