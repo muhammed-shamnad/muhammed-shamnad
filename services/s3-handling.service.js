@@ -93,12 +93,25 @@ const deleteFileFromS3 = async (req, res) => {
     }
 }
 
+const getFilePublicUrl = async (req, res) => {
+    try {
+        const { imageKey } = req.body;
+
+        const signedUrlExpireSeconds = 60 * 5; // 5 min access to the image
+        const url = s3.getSignedUrlPromise('getObject', {
+            Bucket: process.env.AWS_S3_BUCKET_NAME,
+            Key: imageKey,
+            Expires: signedUrlExpireSeconds
+        })
+        res.status(200).send({signedUrl: url});
+    } catch (error) {
+        res.status(500).send(constant.unknownError)
+    }
+}
 
 exports.uploadFileToS3   = uploadFileToS3
 exports.getFileFromS3    = getFileFromS3
 exports.listFilesFromS3  = listFilesFromS3
 exports.updateFileInS3   = updateFileInS3
 exports.deleteFileFromS3 = deleteFileFromS3
-
-
-
+exports.getFilePublicUrl = getFilePublicUrl
