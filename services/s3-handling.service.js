@@ -45,7 +45,21 @@ const getFileFromS3 = async (req, res) => {
     }
 }
 
-exports.uploadFileToS3 = uploadFileToS3
-exports.getFileFromS3  = getFileFromS3
+const listFilesFromS3 = async (req, res) => {
+    try {
+        const params = { Bucket: process.env.AWS_S3_BUCKET_NAME };
+        s3.listObjectsV2(params, function (err, data) {
+            if(err) {
+                return res.status(500).send(constant.unknownError)
+            }
+           res.status(200).send({data})
+        });
+    } catch (error) {
+        res.status(500).send(constant.unknownError)
+    }
+}
 
+exports.uploadFileToS3  = uploadFileToS3
+exports.getFileFromS3   = getFileFromS3
+exports.listFilesFromS3 = listFilesFromS3
 
