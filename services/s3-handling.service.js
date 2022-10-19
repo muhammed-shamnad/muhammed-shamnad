@@ -59,7 +59,29 @@ const listFilesFromS3 = async (req, res) => {
     }
 }
 
+const updateFileInS3 = async (req, res) => {
+    try {
+        const { imageKey } = req.body;
+        const imagePath = req.file.path;
+        const blob = fs.readFileSync(imagePath);
+
+        const uploadedImage = await s3.upload({
+            Bucket: process.env.AWS_S3_BUCKET_NAME,
+            Key: imageKey,
+            Body: blob,
+        }).promise()
+        // uploadedImage.Location  (s3 location of the image)   
+        // delete the file from the server after upload to s3
+        await unlinkAsync(req.file.path)
+        res.status(200).send(constant.success)
+    } catch (error) {
+        res.status(500).send(constant.unknownError)
+    }
+}
+
+
 exports.uploadFileToS3  = uploadFileToS3
 exports.getFileFromS3   = getFileFromS3
 exports.listFilesFromS3 = listFilesFromS3
+exports.updateFileInS3  = updateFileInS3
 
