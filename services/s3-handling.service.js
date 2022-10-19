@@ -20,8 +20,7 @@ const uploadFileToS3 = async (req, res) => {
             Key: Date.now(),
             Body: blob,
         }).promise()
-        // uploadedImage.Location  (s3 location of the image)
-        
+        // uploadedImage.Location  (s3 location of the image)   
         // delete the file from the server after upload to s3
         await unlinkAsync(req.file.path)
         res.status(200).send(constant.success)
