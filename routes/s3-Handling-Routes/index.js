@@ -3,6 +3,8 @@ const router = express.Router();
 const path = require('path')
 const multer = require('multer')
 
+const { uploadFileToS3, getFileFromS3 } = require('../../services/s3-handling.service')
+
 const fileStorageEngine = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.join(__dirname,'../../images/'))
@@ -14,8 +16,7 @@ const fileStorageEngine = multer.diskStorage({
 
 const upload = multer({storage: fileStorageEngine })
 
-const { uploadFileToS3 } = require('../../services/s3-handling.service')
-
 router.post('/', upload.single('image'), uploadFileToS3);
+router.get('/:imageId', getFileFromS3);
 
 module.exports = router;
