@@ -4,7 +4,9 @@ const router = express.Router();
 const port = 8000;
 const cors = require('cors')
 
-require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+  }
 
 const routes = require('./routes/index');
 

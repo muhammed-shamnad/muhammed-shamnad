@@ -81,7 +81,7 @@ const updateFileInS3 = async (req, res) => {
 
 const deleteFileFromS3 = async (req, res) => {
     try {
-        const { imageKey } = req.body;
+        const { imageKey } = req.params;
         var params = { Bucket: process.env.AWS_S3_BUCKET_NAME, Key: imageKey };
 
         s3.deleteObject(params, function (err, data) {
@@ -95,10 +95,10 @@ const deleteFileFromS3 = async (req, res) => {
 
 const getFilePublicUrl = async (req, res) => {
     try {
-        const { imageKey } = req.body;
+        const { imageKey } = req.params;
 
         const signedUrlExpireSeconds = 60 * 5; // 5 min access to the image
-        const url = s3.getSignedUrlPromise('getObject', {
+        const url = await s3.getSignedUrlPromise('getObject', {
             Bucket: process.env.AWS_S3_BUCKET_NAME,
             Key: imageKey,
             Expires: signedUrlExpireSeconds
